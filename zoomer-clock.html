@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analog Clock with Number Hands</title>
+<style>
+  canvas {
+    background-color: #fff;
+    display: block;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="clock" width="400" height="400"></canvas>
+
+<script>
+const canvas = document.getElementById('clock');
+const ctx = canvas.getContext('2d');
+const clockRadius = canvas.width / 2;
+
+function drawClock() {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+
+  // Draw clock face
+  ctx.beginPath();
+  ctx.arc(clockRadius, clockRadius, clockRadius - 10, 0, 2 * Math.PI);
+  ctx.stroke();
+
+  drawHand(clockRadius, hours % 12 / 12 * 360 - 90, hours.toString(), 80); // Hour hand
+  drawHand(clockRadius, minutes / 60 * 360 - 90, minutes.toString(), 110); // Minute hand
+  drawHand(clockRadius, seconds / 60 * 360 - 90, seconds.toString(), 140); // Second hand
+}
+
+function drawHand(center, angle, text, length) {
+  const radian = angle * Math.PI / 180;
+  const endX = center + length * Math.cos(radian);
+  const endY = center + length * Math.sin(radian);
+
+  ctx.beginPath();
+  ctx.moveTo(clockRadius, clockRadius); // Move to center
+
+  // Draw the number string along the hand's path
+  for (let i = 1; i < 6; i++) {
+    const step = i * (length / 5);
+    const stepX = center + step * Math.cos(radian);
+    const stepY = center + step * Math.sin(radian);
+    ctx.fillText(text, stepX, stepY);
+  }
+
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+setInterval(drawClock, 1000); // Update the clock every second
+drawClock(); // initial call to display the correct time immediately
+</script>
+</body>
+</html>
